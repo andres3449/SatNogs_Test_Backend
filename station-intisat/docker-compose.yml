@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+
+  rigctld:
+    image: librespace/hamlib:4.0
+    user: '999'
+    read_only: true
+    environment:
+      MODEL: '1'
+    restart: 'unless-stopped'
+    command: 'rigctld'
+
+  satnogs_client:
+    image: librespace/satnogs-client:1.9.3  # LSF stable docker image
+    #image: librespace/satnogs-client:1.9.3-unstable  # LSF experimental docker image
+    #image: knegge/satnogs-client:lsf-addons  # LSF stable + gr-satellites and addons
+    #image: knegge/satnogs-client:lsf-dev-addons  # LSF unstable + gr-satellites and addons
+    user: '999'
+    read_only: true
+    init: true  # init is needed when launching processes in the background
+    env_file:
+      - ./station.env
+    environment:
+      SATNOGS_RIG_IP: 'rigctld'
+      SATNOGS_RIG_PORT: '4532'
+    command: 'satnogs-client'  # default
+    device_cgroup_rules:
+      - 'c 189:* rwm'
+    devices:
+      - '/dev/bus/usb'
+    volumes:
+      - type: 'tmpfs'
+        target: '/tmp'
+      - type: 'volume'
+        source: 'satnogs-client'
+        target: '/var/lib/satnogs-client'
+    restart: 'unless-stopped'
+    stop_grace_period: 1s
+
+volumes:
+  satnogs-client:  # persistent named volume for the station
