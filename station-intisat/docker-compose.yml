@@ -1,9 +1,8 @@
-version: '3.8'
 services:
 
   rigctld:
-    image: librespace/hamlib:4.0
-    user: '999'
+    image: librespace/hamlib:4.5.4
+    user: '500'
     read_only: true
     environment:
       MODEL: '1'
@@ -11,11 +10,11 @@ services:
     command: 'rigctld'
 
   satnogs_client:
-    image: librespace/satnogs-client:1.9.3  # LSF stable docker image
-    #image: librespace/satnogs-client:1.9.3-unstable  # LSF experimental docker image
+    image: librespace/satnogs-client:2.1.2  # LSF stable docker image
+    #image: librespace/satnogs-client:2.1.2-unstable  # LSF experimental docker image
     #image: knegge/satnogs-client:lsf-addons  # LSF stable + gr-satellites and addons
     #image: knegge/satnogs-client:lsf-dev-addons  # LSF unstable + gr-satellites and addons
-    user: '999'
+    user: '500'
     read_only: true
     init: true  # init is needed when launching processes in the background
     env_file:
